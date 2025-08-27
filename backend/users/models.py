@@ -37,18 +37,16 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     
-class userProfile(models.Model):
+class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    number_id = models.CharField(max_length=50)
+    number_id = models.CharField(max_length=50, unique=True)
+    age = models.IntegerField(null=True, blank=True)
     phone = models.CharField(max_length=30)
-    coutry = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
-    age = models.IntegerField(max_length=2)
     address = models.CharField(max_length=80)
     photo = models.ImageField(upload_to='user_photos/', null=True, blank=True)
-    create_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.user.username}'s profile"

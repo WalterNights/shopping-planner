@@ -31,3 +31,4 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'email')
     
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(UserProfile)

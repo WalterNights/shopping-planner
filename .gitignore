@@ -6,3 +6,16 @@ backend/__pycache__/
 backend/*.py[cod]
 backend/*.sqlite3
 backend/*.log
+
+# === Node / Angular ===
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/cache/
+frontend/.env
+
+# === IDEs / OS ===
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
