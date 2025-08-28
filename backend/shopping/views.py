@@ -9,6 +9,8 @@ from shopping.serializer import SupermarketSerializer
 from shopping.utils.sacraping_scripts import scrap_tiendas_exito
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from django.views.generic import TemplateView
+
 
 class SupermarketScrapingView(APIView):
     permission_classes = [AllowAny]
@@ -21,7 +23,9 @@ class SupermarketScrapingView(APIView):
             return Response({'error': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND) """
         query1 = "bebidas"
         query2 = "frutas-y-verduras"
-        new_supermarket = scrap_tiendas_exito(query1)
+        query3 = "carnes"
+        query4 = "vinos-y-licores"
+        new_supermarket = scrap_tiendas_exito(query4)
         if len(new_supermarket) == 0:
             products = ProductVariant.objects.all()
             serializers = ProductVariantSerializer(products, many=True)
@@ -29,3 +33,9 @@ class SupermarketScrapingView(APIView):
         else:
             products = new_supermarket
         return Response(products, status=status.HTTP_200_OK)
+    
+    
+class SupermarketSelectView(TemplateView):
+    template_name = "supermarket_select.html"
+    
+    
