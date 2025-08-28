@@ -50,7 +50,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProductVariant
-        fields = ['id', 'supermarket', 'supermarket_id', 'brand', 'brand_id', 'product', 'product_id', 'price', 'last_updated']
+        fields = ['id', 'supermarket', 'supermarket_id', 'brand', 'brand_id', 'product', 'product_id', 'image', 'price', 'last_updated']
         
     def create(self, validated_data):
         productVariant, created = ProductVariant.objects.get_or_create(**validated_data)

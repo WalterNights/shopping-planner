@@ -28,7 +28,13 @@ def scrap_tiendas_exito(query):
                 if serializer_category.is_valid():
                     serializer_category.save()
         """ Create Products """
-        serializer_product = ProductSerializer(data={"name": items['name'], "category": serializer_category.data, "category_id": serializer_category.data['id'], })
+        serializer_product = ProductSerializer(
+            data={
+                "name": items['name'], 
+                "category": serializer_category.data, 
+                "category_id": serializer_category.data['id'], 
+                }
+            )
         if serializer_product.is_valid():
             serializer_product.save()
         """ Create Product Variants """
@@ -40,6 +46,7 @@ def scrap_tiendas_exito(query):
                 "brand_id": serializer_brand.data['id'],
                 "product": serializer_product.data,
                 "product_id": serializer_product.data.get("id"),
+                "image": items['image'],
                 "price": items['price'],
             }
         )
@@ -49,6 +56,7 @@ def scrap_tiendas_exito(query):
     return products_created
 
 
+
 def interface(category):
     if category == "carnes":
         selectedFacets =  [
@@ -56,7 +64,7 @@ def interface(category):
             {"key":"channel","value":"{\"salesChannel\":\"1\",\"regionId\":\"\"}"},
             {"key":"locale","value":"es-CO"}
         ]
-    if category == "bebidas" or category == "frutas-y-verduras":
+    if category == "bebidas" or category == "frutas-y-verduras" or category == "lacteos-huevos-y-refrigerados" or category == "aseo-del-hogar":
         selectedFacets =  [
             {"key":"category-1","value":"mercado"},
             {"key":"category-2","value":category},
@@ -96,7 +104,7 @@ def get_products_by_graphql(category):
         for item in products["edges"]:
             if category == "bebidas":
                 category_product = item.get("node")["breadcrumbList"]["itemListElement"][0]["name"]
-            elif category == "frutas-y-verduras"  or category =="carnes" or category == "vinos-y-licores":
+            elif category == "frutas-y-verduras"  or category =="carnes" or category == "vinos-y-licores" or category == "lacteos-huevos-y-refrigerados" or category == "aseo-del-hogar":
                 category_product = item.get("node")["breadcrumbList"]["itemListElement"][1]["name"]     
             product = {
                 "id": item.get("node")["id"],

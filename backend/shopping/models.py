@@ -36,6 +36,7 @@ class ProductVariant(models.Model):
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE, related_name='product_variants')
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='product_variants')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+    image = models.URLField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     last_updated = models.DateTimeField(auto_now=True)
     

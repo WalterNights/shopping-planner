@@ -1,3 +1,171 @@
-<div>
-    <h1>HOLA</h1>
-</div>
+<style>
+    body {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    .full_container {
+        width: 100vw;
+        max-width: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+        background-color: #f7f7f7
+    }
+    .display-flex {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+        gap: 20px;
+    }
+    .display-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-gap: 40px;
+        place-items: center;
+    }
+    .card-container {
+        max-width: 100%;
+        overflow: hidden;
+        background-color: #f7f7f7;
+        padding: 5rem;
+        margin-top: 4rem;
+    }
+    .button-container {
+        position: fixed;
+        width: 100vw;
+        max-width: 100%;
+        background-color: #3b9bff;
+        z-index: 100;
+    }
+    .button-style {
+        width: 12rem; 
+        height: 4rem; 
+        padding: 1rem; 
+        border: none; 
+        border-radius: 10px; 
+        background: none;
+        color: white;
+        font-size: 15px; 
+        font-weight: 600; 
+        cursor: pointer;
+    }
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 15rem;
+        height: 20rem;
+        border: none;
+        border-radius: 10px;
+        font-family: system-ui, sans-serif;
+        font-size: 12px;
+        color: #1f1f1f;
+        background-color: white;
+        box-shadow: 0 4px 10px #0000001a;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .card-img {
+        width: 100%;
+        overflow: hidden;
+        justify-content: center;
+        padding-top: 25px;
+    }
+    .card-img img {
+        width: auto;
+        height: 10rem;
+        border-radius: 10px;
+    }
+    .card-brand-container {
+        width: 15rem;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+    }
+    .card-brand {
+        position: relative;
+        bottom: 1rem;
+        background-color: #3b9bff;
+        color: white;
+        font-weight: 800;
+        text-align: center;
+        padding: 10px;
+        border-radius: 10px;
+        width: 13rem;
+    }
+    .card p {margin: 0;}
+    .card-name {
+        padding: 0 20px;
+        height: 4rem;
+    }
+    .card-price {
+        display: flex;
+        align-items: center;
+        height: 45px;
+        font-size: 14px;
+        padding: 0 20px;
+        background-color: #d3e9ff;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+</style>
+
+<section class="full_container">
+    <div class="display-flex button-container">
+        <button onclick="callScrapping('carnes')" class="button-style">Carnes</button>
+        <button onclick="callScrapping('bebidas')" class="button-style">Bebidas</button>
+        <button onclick="callScrapping('frutas-y-verduras')" class="button-style">Frutas y Verduras</button>
+        <button onclick="callScrapping('vinos-y-licores')" class="button-style">Licores</button>
+        <button onclick="callScrapping('lacteos-huevos-y-refrigerados')" class="button-style">Lacteos Huevos y Refrigerados</button>
+        <button onclick="callScrapping('aseo-del-hogar')" class="button-style">Productos de Aseo</button>
+    </div>
+    <div class="display-flex card-container">
+        <div id="results" class="display-grid"></div>
+    </div>
+</section>
+
+<script>
+    const callScrapping = (value) => {
+        alert(`Consultando datos de la categoría: ${value}...`)
+        fetch(`/api/shopping/scrap_supermarket/?category=${value}`)
+        .then(response => response.json())
+        .then(data => {
+            alert("Datos recibidos del backend ✅");
+            let container = document.getElementById("results");
+            container.innerHTML = "";
+            data.forEach(item => {
+                let card = document.createElement("div");
+                card.classList.add("card");
+                let formatted = new Intl.NumberFormat("es-CO", {
+                    minimumFractionDigits: 0
+                }).format(item.price)
+                card.innerHTML = `
+                <div class="display-flex card-img">
+                    <img src="${item.image}" alt="${item.product.name}"/>
+                </div>
+                <div class="card-name">
+                    <h3>${item.product.name}</h3>
+                </div>
+                <div class="card-brand-container">
+                    <div class="card-brand">
+                        <p>${item.brand.name}</p>
+                    </div>
+                </div>
+                <div class="card-price">
+                    <p>Precio: <b>$${formatted}</b></p>
+                </div>
+                `
+                container.appendChild(card);
+            });
+        })
+        .catch(error => {
+            alert("Ocurrió un error ❌");
+            console.error(error)
+        });
+    }
+</script>
