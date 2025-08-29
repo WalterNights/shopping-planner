@@ -17,7 +17,9 @@ def category_map(category):
         "frutas-y-verduras": ["Frutas y verduras"],
         "carnes": ["Pollo, carne y pescado"],
         "vinos-y-licores": ["Ginebra", "Brandy", "Coctelería", "Vodka", "Tequila", "Ron", "Vinos", "Whisky", "Cerveza", "Aguardiente"],
-        "lacteos-huevos-y-refrigerados": ["Lácteos, huevos y refrigerados"]
+        "lacteos-huevos-y-refrigerados": ["Lácteos, huevos y refrigerados"],
+        "aseo-del-hogar": ["Aseo del hogar"],
+        "despensa": ["Despensa"]
     }
     subcategories = categories_map.get(category, [])
     return subcategories
@@ -30,17 +32,11 @@ class SupermarketScrapingView(APIView):
         query = request.GET.get("category")
         subcategories = category_map(query)
         check_products = Product.objects.filter(category__name__in=subcategories)
-        
         product_variant = []
-        
         for item in check_products:
             variants = ProductVariant.objects.filter(product=item.id)
             for variant in variants:
                 product_variant.append(variant)
-            
-        
-            
-        
         if check_products:
             serializers = ProductVariantSerializer(product_variant, many=True)
             return Response(serializers.data, status=status.HTTP_200_OK)

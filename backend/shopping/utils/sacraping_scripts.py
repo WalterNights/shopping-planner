@@ -56,26 +56,35 @@ def scrap_tiendas_exito(query):
     return products_created
 
 
+CATEGORIES = {
+    "bebidas",
+    "frutas-y-verduras",
+    "lacteos-huevos-y-refrigerados",
+    "aseo-del-hogar",
+    "despensa"
+}
+
 
 def interface(category):
+    selectedFacets =  [
+        {"key":"channel","value":"{\"salesChannel\":\"1\",\"regionId\":\"\"}"},
+        {"key":"locale","value":"es-CO"}
+    ] 
     if category == "carnes":
-        selectedFacets =  [
+        return [
             {"key":"productClusterIds","value":"30507"},
-            {"key":"channel","value":"{\"salesChannel\":\"1\",\"regionId\":\"\"}"},
-            {"key":"locale","value":"es-CO"}
+            *selectedFacets
         ]
-    if category == "bebidas" or category == "frutas-y-verduras" or category == "lacteos-huevos-y-refrigerados" or category == "aseo-del-hogar":
-        selectedFacets =  [
+    if category in CATEGORIES:
+        return [
             {"key":"category-1","value":"mercado"},
             {"key":"category-2","value":category},
-            {"key":"channel","value":"{\"salesChannel\":\"1\",\"regionId\":\"\"}"},
-            {"key":"locale","value":"es-CO"}
+            *selectedFacets
         ]
     if  category == "vinos-y-licores":
-        selectedFacets =  [
+        return  [
             {"key":"category-1","value":category},
-            {"key":"channel","value":"{\"salesChannel\":\"1\",\"regionId\":\"\"}"},
-            {"key":"locale","value":"es-CO"}
+            *selectedFacets
         ]
     return selectedFacets 
 
@@ -104,7 +113,7 @@ def get_products_by_graphql(category):
         for item in products["edges"]:
             if category == "bebidas":
                 category_product = item.get("node")["breadcrumbList"]["itemListElement"][0]["name"]
-            elif category == "frutas-y-verduras"  or category =="carnes" or category == "vinos-y-licores" or category == "lacteos-huevos-y-refrigerados" or category == "aseo-del-hogar":
+            elif category in CATEGORIES:
                 category_product = item.get("node")["breadcrumbList"]["itemListElement"][1]["name"]     
             product = {
                 "id": item.get("node")["id"],
